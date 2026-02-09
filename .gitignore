@@ -1,0 +1,8 @@
+**/.*
+!**/.gitignore
+!**/.dockerignore
+!**/.mvn
+!.editorconfig
+!.github
+**/target
+**/*.iml
