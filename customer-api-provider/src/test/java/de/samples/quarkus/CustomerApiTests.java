@@ -289,6 +289,14 @@ class CustomerApiTests {
           "state": "active"
         }
         """.formatted(LocalDate.now().plusDays(1).toString())),
+      // minimum age of 14
+      Arguments.of("Mindestalter: 14 Jahre", """
+        {
+          "name": "Tom Mayer",
+          "birthdate": "%s",
+          "state": "active"
+        }
+        """.formatted(LocalDate.now().minusYears(14).plusDays(1).toString())),
       // state enum
       Arguments.of("state ungültiger Wert", """
         {
