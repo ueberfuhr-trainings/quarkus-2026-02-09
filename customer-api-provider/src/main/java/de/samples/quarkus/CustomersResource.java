@@ -1,6 +1,7 @@
 package de.samples.quarkus;
 
-import jakarta.ws.rs.BadRequestException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
@@ -17,25 +18,21 @@ import jakarta.ws.rs.core.UriInfo;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 @Path("/customers")
 @Produces(MediaType.APPLICATION_JSON)
 public class CustomersResource {
 
-  private static final Set<String> VALID_STATES = Set.of("active", "locked", "disabled");
   private final Map<UUID, Customer> customers = new HashMap<>();
 
   @GET
   public Collection<Customer> getAllCustomers(
     @QueryParam("state")
+    @Pattern(regexp = "active|locked|disabled")
     String state
   ) {
     if (state != null) {
-      if (!VALID_STATES.contains(state)) {
-        throw new BadRequestException();
-      }
       return customers.values().stream()
         .filter(c -> state.equals(c.getState()))
         .toList();
@@ -46,6 +43,7 @@ public class CustomersResource {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createCustomer(
+    @Valid
     Customer customer,
     @Context UriInfo uriInfo
   ) {
