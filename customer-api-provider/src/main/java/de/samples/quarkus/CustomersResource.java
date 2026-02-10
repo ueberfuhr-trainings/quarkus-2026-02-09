@@ -13,31 +13,32 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Path("/customers")
 @Produces(MediaType.APPLICATION_JSON)
+@RequiredArgsConstructor
 public class CustomersResource {
 
-  private final Map<UUID, Customer> customers = new HashMap<>();
+  private final CustomersService customersService;
 
   @GET
   public Collection<Customer> getAllCustomers(
     @QueryParam("state")
     @ValidState
-
     String state
   ) {
     if (state != null) {
-      return customers.values().stream()
-        .filter(c -> state.equals(c.getState()))
+      return customersService
+        .getCustomersByState(state)
         .toList();
     }
-    return customers.values();
+    return customersService
+      .getAllCustomers()
+      .toList();
   }
 
   @POST
@@ -47,8 +48,7 @@ public class CustomersResource {
     Customer customer,
     @Context UriInfo uriInfo
   ) {
-    customer.setUuid(UUID.randomUUID());
-    customers.put(customer.getUuid(), customer);
+    customersService.createCustomer(customer);
     final var location = uriInfo
       .getAbsolutePathBuilder()
       .path("{uuid}")
@@ -62,11 +62,9 @@ public class CustomersResource {
   @GET
   @Path("/{uuid}")
   public Customer findCustomerById(@PathParam("uuid") UUID uuid) {
-    final var customer = customers.get(uuid);
-    if (customer == null) {
-      throw new NotFoundException();
-    }
-    return customer;
+    return customersService
+      .getCustomerById(uuid)
+      .orElseThrow(NotFoundException::new);
   }
 
 }
