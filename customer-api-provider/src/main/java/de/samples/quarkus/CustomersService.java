@@ -25,7 +25,7 @@ public class CustomersService {
       .ofNullable(customers.get(uuid));
   }
 
-  public Stream<Customer> getCustomersByState(String state) {
+  public Stream<Customer> getCustomersByState(CustomerState state) {
     return customers
       .values()
       .stream()
