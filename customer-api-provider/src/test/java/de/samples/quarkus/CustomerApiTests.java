@@ -3,12 +3,16 @@ package de.samples.quarkus;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -30,9 +34,100 @@ class CustomerApiTests {
   }
 
   // GET /customers + Accept: XML -> 406
+  @Test
+  void whenGetCustomers_andAcceptXml_thenReturn406() {
+    given()
+      .accept(ContentType.XML)
+      .when()
+      .get("/customers")
+      .then()
+      .statusCode(406);
+  }
 
   // state-Parameter? -> active/locked/disabled / gelbekatze
 
+  private static final Map<String, String> OTHER_STATE = Map.of(
+    "active", "locked",
+    "locked", "disabled",
+    "disabled", "active"
+  );
+
+  @ParameterizedTest
+  @ValueSource(strings = {"active", "locked", "disabled"})
+  void whenPostCustomerWithState_thenFilterByMatchingState_containsCustomer(String state) {
+    // --- POST ---
+    final var uuid =
+      given()
+        .contentType(ContentType.JSON)
+        .accept(ContentType.JSON)
+        .body("""
+          {
+            "name": "State Test",
+            "birthdate": "2000-01-01",
+            "state": "%s"
+          }
+          """.formatted(state))
+        .when()
+        .post("/customers")
+        .then()
+        .statusCode(201)
+        .extract()
+        .path("uuid");
+
+    // --- GET mit passendem State ---
+    given()
+      .accept(ContentType.JSON)
+      .queryParam("state", state)
+      .when()
+      .get("/customers")
+      .then()
+      .statusCode(200)
+      .body("uuid", hasItem(equalTo(uuid)));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"active", "locked", "disabled"})
+  void whenPostCustomerWithState_thenFilterByOtherState_doesNotContainCustomer(String state) {
+    // --- POST ---
+    final var uuid =
+      given()
+        .contentType(ContentType.JSON)
+        .accept(ContentType.JSON)
+        .body("""
+          {
+            "name": "State Test",
+            "birthdate": "2000-01-01",
+            "state": "%s"
+          }
+          """.formatted(state))
+        .when()
+        .post("/customers")
+        .then()
+        .statusCode(201)
+        .extract()
+        .path("uuid");
+
+    // --- GET mit anderem State ---
+    given()
+      .accept(ContentType.JSON)
+      .queryParam("state", OTHER_STATE.get(state))
+      .when()
+      .get("/customers")
+      .then()
+      .statusCode(200)
+      .body("uuid", not(hasItem(equalTo(uuid))));
+  }
+
+  @Test
+  void whenGetCustomersWithInvalidState_thenReturn400() {
+    given()
+      .accept(ContentType.JSON)
+      .queryParam("state", "gelbekatze")
+      .when()
+      .get("/customers")
+      .then()
+      .statusCode(400);
+  }
 
   @Test
   void whenPostCustomers_Then_ReturnLocationHeaderToFetchNewResource() {
@@ -81,8 +176,48 @@ class CustomerApiTests {
       .body("state", is(equalTo("active")));
   }
 
-  // Content Negotiation
-  // POST customers -> GET /customers/{uuid} -> 200
   // POST customers -> GET /customers -> 200 + Kunde in Liste
+  @Test
+  void whenPostCustomer_thenGetCustomers_containsNewCustomer() {
+    // --- POST ---
+    final var uuidFromBody =
+      given()
+        .contentType(ContentType.JSON)
+        .accept(ContentType.JSON)
+        .body("""
+          {
+            "name": "Lisa Schmidt",
+            "birthdate": "1995-07-15",
+            "state": "active"
+          }
+          """)
+        .when()
+        .post("/customers")
+        .then()
+        .statusCode(201)
+        .extract()
+        .path("uuid");
+
+    // --- GET /customers ---
+    given()
+      .accept(ContentType.JSON)
+      .when()
+      .get("/customers")
+      .then()
+      .statusCode(200)
+      .contentType(ContentType.JSON)
+      .body("uuid", org.hamcrest.Matchers.hasItem(equalTo(uuidFromBody)));
+  }
+
+  // GET /customers/{uuid} mit unbekannter UUID -> 404
+  @Test
+  void whenGetCustomerByUnknownUuid_thenReturn404() {
+    given()
+      .accept(ContentType.JSON)
+      .when()
+      .get("/customers/{uuid}", java.util.UUID.randomUUID().toString())
+      .then()
+      .statusCode(404);
+  }
 
 }
