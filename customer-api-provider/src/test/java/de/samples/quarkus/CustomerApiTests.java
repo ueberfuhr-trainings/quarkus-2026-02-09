@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -280,6 +281,14 @@ class CustomerApiTests {
           "state": "active"
         }
         """),
+      // birthdate in der Zukunft
+      Arguments.of("birthdate in der Zukunft", """
+        {
+          "name": "Tom Mayer",
+          "birthdate": "%s",
+          "state": "active"
+        }
+        """.formatted(LocalDate.now().plusDays(1).toString())),
       // state enum
       Arguments.of("state ungültiger Wert", """
         {
