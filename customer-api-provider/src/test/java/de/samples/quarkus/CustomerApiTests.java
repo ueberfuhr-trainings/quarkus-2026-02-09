@@ -220,4 +220,42 @@ class CustomerApiTests {
       .statusCode(404);
   }
 
+  @Test
+  void whenPostCustomerWithUnknownProperty_thenReturn400() {
+    given()
+      .contentType(ContentType.JSON)
+      .accept(ContentType.JSON)
+      .body("""
+        {
+          "name": "Tom Mayer",
+          "birthdate": "2001-04-23",
+          "state": "active",
+          "gelbekatze": "meow"
+        }
+        """)
+      .when()
+      .post("/customers")
+      .then()
+      .statusCode(400);
+  }
+
+  @Test
+  void whenPostCustomerWithReadOnlyUuid_thenReturn400() {
+    given()
+      .contentType(ContentType.JSON)
+      .accept(ContentType.JSON)
+      .body("""
+        {
+          "name": "Tom Mayer",
+          "birthdate": "2001-04-23",
+          "state": "active",
+          "uuid": "550e8400-e29b-41d4-a716-446655440000"
+        }
+        """)
+      .when()
+      .post("/customers")
+      .then()
+      .statusCode(400);
+  }
+
 }
