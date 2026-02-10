@@ -37,4 +37,7 @@ public class CustomersService {
     customers.put(customer.getUuid(), customer);
   }
 
+  public long count() {
+    return customers.size();
+  }
 }
