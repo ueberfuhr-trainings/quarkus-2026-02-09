@@ -1,7 +1,6 @@
 package de.samples.quarkus;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Pattern;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
@@ -29,7 +28,8 @@ public class CustomersResource {
   @GET
   public Collection<Customer> getAllCustomers(
     @QueryParam("state")
-    @Pattern(regexp = "active|locked|disabled")
+    @ValidState
+
     String state
   ) {
     if (state != null) {
