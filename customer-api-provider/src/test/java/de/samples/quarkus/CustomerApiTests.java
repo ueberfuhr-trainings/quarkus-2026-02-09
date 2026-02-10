@@ -2,12 +2,16 @@ package de.samples.quarkus;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.emptyOrNullString;
@@ -118,6 +122,7 @@ class CustomerApiTests {
       .body("uuid", not(hasItem(equalTo(uuid))));
   }
 
+  @Tag("API-Validation")
   @Test
   void whenGetCustomersWithInvalidState_thenReturn400() {
     given()
@@ -220,38 +225,80 @@ class CustomerApiTests {
       .statusCode(404);
   }
 
-  @Test
-  void whenPostCustomerWithUnknownProperty_thenReturn400() {
-    given()
-      .contentType(ContentType.JSON)
-      .accept(ContentType.JSON)
-      .body("""
+  static Stream<Arguments> invalidCustomerBodies() {
+    return Stream.of(
+      // unknown / read-only properties
+      Arguments.of("unbekannte Property", """
         {
           "name": "Tom Mayer",
           "birthdate": "2001-04-23",
           "state": "active",
           "gelbekatze": "meow"
         }
-        """)
-      .when()
-      .post("/customers")
-      .then()
-      .statusCode(400);
-  }
-
-  @Test
-  void whenPostCustomerWithReadOnlyUuid_thenReturn400() {
-    given()
-      .contentType(ContentType.JSON)
-      .accept(ContentType.JSON)
-      .body("""
+        """),
+      Arguments.of("read-only Property uuid", """
         {
           "name": "Tom Mayer",
           "birthdate": "2001-04-23",
           "state": "active",
           "uuid": "550e8400-e29b-41d4-a716-446655440000"
         }
+        """),
+      // required fields
+      Arguments.of("name fehlt", """
+        {
+          "birthdate": "2001-04-23",
+          "state": "active"
+        }
+        """),
+      Arguments.of("birthdate fehlt", """
+        {
+          "name": "Tom Mayer",
+          "state": "active"
+        }
+        """),
+      // name constraints: minLength 3, maxLength 100
+      Arguments.of("name zu kurz", """
+        {
+          "name": "AB",
+          "birthdate": "2001-04-23",
+          "state": "active"
+        }
+        """),
+      Arguments.of("name zu lang", """
+        {
+          "name": "%s",
+          "birthdate": "2001-04-23",
+          "state": "active"
+        }
+        """.formatted("A".repeat(101))),
+      // birthdate format
+      Arguments.of("birthdate ungültiges Format", """
+        {
+          "name": "Tom Mayer",
+          "birthdate": "23.04.2001",
+          "state": "active"
+        }
+        """),
+      // state enum
+      Arguments.of("state ungültiger Wert", """
+        {
+          "name": "Tom Mayer",
+          "birthdate": "2001-04-23",
+          "state": "gelbekatze"
+        }
         """)
+    );
+  }
+
+  @Tag("API-Validation")
+  @ParameterizedTest(name = "Invalid Body on Create: {0}")
+  @MethodSource("invalidCustomerBodies")
+  void whenPostCustomerWithInvalidData_thenReturn400(String description, String body) {
+    given()
+      .contentType(ContentType.JSON)
+      .accept(ContentType.JSON)
+      .body(body)
       .when()
       .post("/customers")
       .then()
