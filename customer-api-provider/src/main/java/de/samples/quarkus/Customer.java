@@ -3,6 +3,7 @@ package de.samples.quarkus;
 import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +22,6 @@ public class Customer {
   @NotNull
   @MinAge(14)
   private LocalDate birthdate;
-  @ValidState
-  private String state;
+  private CustomerState state;
 
 }

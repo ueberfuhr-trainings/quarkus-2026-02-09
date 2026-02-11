@@ -28,8 +28,7 @@ public class CustomersResource {
   @GET
   public Collection<Customer> getAllCustomers(
     @QueryParam("state")
-    @ValidState
-    String state
+    CustomerState state
   ) {
     if (state != null) {
       return customersService
