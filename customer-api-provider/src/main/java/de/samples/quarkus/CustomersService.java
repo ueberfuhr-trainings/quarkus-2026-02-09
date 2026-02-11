@@ -1,43 +1,38 @@
 package de.samples.quarkus;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 @ApplicationScoped
+@RequiredArgsConstructor
 public class CustomersService {
 
-  private final Map<UUID, Customer> customers = new HashMap<>();
+  private final CustomersRepository repo;
 
   public Stream<Customer> getAllCustomers() {
-    return customers
-      .values()
-      .stream();
+    return repo.streamAll();
   }
 
   public Optional<Customer> getCustomerById(UUID uuid) {
-    return Optional
-      .ofNullable(customers.get(uuid));
+    return repo.findByIdOptional(uuid);
   }
 
   public Stream<Customer> getCustomersByState(String state) {
-    return customers
-      .values()
-      .stream()
-      .filter(c -> c.getState().equals(state));
+    return repo.findByState(state);
   }
 
+  @Transactional
   public void createCustomer(@Valid Customer customer) {
-    customer.setUuid(UUID.randomUUID());
-    customers.put(customer.getUuid(), customer);
+    repo.persist(customer);
   }
 
   public long count() {
-    return customers.size();
+    return repo.count();
   }
 }
