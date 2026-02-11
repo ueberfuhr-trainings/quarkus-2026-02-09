@@ -1,5 +1,6 @@
 package de.samples.quarkus;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Tag;
@@ -23,6 +24,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 @QuarkusTest
+@TestTransaction
 class CustomerApiTests {
 
   // GET /customers + Accept: JSON -> 200 + JSON + Body = Liste/Array (mit Kundendaten)

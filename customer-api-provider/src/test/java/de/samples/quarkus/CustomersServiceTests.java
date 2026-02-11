@@ -1,5 +1,6 @@
 package de.samples.quarkus;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @QuarkusTest
+@TestTransaction
 public class CustomersServiceTests {
 
   @Inject
