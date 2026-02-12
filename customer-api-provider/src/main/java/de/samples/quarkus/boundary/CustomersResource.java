@@ -1,6 +1,5 @@
 package de.samples.quarkus.boundary;
 
-import de.samples.quarkus.domain.Customer;
 import de.samples.quarkus.domain.CustomersService;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -86,9 +85,12 @@ public class CustomersResource {
 
   @GET
   @Path("/{uuid}")
-  public Customer findCustomerById(@PathParam("uuid") UUID uuid) {
+  public CustomerDto findCustomerById(
+    @PathParam("uuid") UUID uuid
+  ) {
     return customersService
       .getCustomerById(uuid)
+      .map(mapper::map)
       .orElseThrow(NotFoundException::new);
   }
 
