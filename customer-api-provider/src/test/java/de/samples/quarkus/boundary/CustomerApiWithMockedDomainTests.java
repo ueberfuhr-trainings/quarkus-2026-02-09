@@ -1,5 +1,6 @@
-package de.samples.quarkus;
+package de.samples.quarkus.boundary;
 
+import de.samples.quarkus.domain.CustomersService;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
@@ -12,7 +13,7 @@ import static io.restassured.RestAssured.given;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
-public class CustomerApiWithMockedServiceTests {
+public class CustomerApiWithMockedDomainTests {
 
   // service -> MOCK -> customer mit UUID existiert nicht -> API=>404
   @InjectMock

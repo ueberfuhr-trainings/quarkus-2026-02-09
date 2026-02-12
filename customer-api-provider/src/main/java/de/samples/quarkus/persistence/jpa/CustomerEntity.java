@@ -1,15 +1,12 @@
-package de.samples.quarkus;
+package de.samples.quarkus.persistence.jpa;
 
-import jakarta.json.bind.annotation.JsonbTransient;
+import de.samples.quarkus.domain.CustomerState;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,22 +17,14 @@ import java.util.UUID;
 @Setter
 @Entity(name = "Customer") // Name im JQPL
 @Table(name = "CUSTOMERS")
-public class Customer {
+public class CustomerEntity {
 
-  @Setter(onMethod_ = @JsonbTransient)
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  @Null(groups = ValidationGroups.OnCreate.class)
-  @NotNull(groups = ValidationGroups.OnUpdate.class)
   private UUID uuid;
-  @Size(min = 3, max = 100)
-  @NotNull
   private String name;
-  @NotNull
-  @MinAge(14)
   @Column(name = "BIRTH_DATE")
   private LocalDate birthdate;
-  @ValidState
-  private String state;
+  private CustomerState state;
 
 }

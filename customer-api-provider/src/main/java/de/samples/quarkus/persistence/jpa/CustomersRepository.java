@@ -1,5 +1,6 @@
-package de.samples.quarkus;
+package de.samples.quarkus.persistence.jpa;
 
+import de.samples.quarkus.domain.CustomerState;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -8,9 +9,9 @@ import java.util.stream.Stream;
 
 @ApplicationScoped
 public class CustomersRepository
-  implements PanacheRepositoryBase<Customer, UUID> {
+  implements PanacheRepositoryBase<CustomerEntity, UUID> {
 
-  public Stream<Customer> findByState(String state) {
+  public Stream<CustomerEntity> findByState(CustomerState state) {
     return stream("state", state);
   }
 

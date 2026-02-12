@@ -1,4 +1,4 @@
-package de.samples.quarkus;
+package de.samples.quarkus.boundary;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

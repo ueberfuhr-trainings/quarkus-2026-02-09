@@ -1,11 +1,11 @@
-package de.samples.quarkus;
+package de.samples.quarkus.boundary;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CustomerPatch {
+public class CustomerPatchDto {
 
   @ValidState
   private String state;

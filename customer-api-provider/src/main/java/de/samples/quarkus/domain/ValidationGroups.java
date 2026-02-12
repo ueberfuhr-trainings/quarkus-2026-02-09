@@ -1,4 +1,4 @@
-package de.samples.quarkus;
+package de.samples.quarkus.domain;
 
 import jakarta.validation.groups.Default;
 
@@ -14,13 +14,15 @@ public interface ValidationGroups {
    * Extends {@link Default} so that standard constraints
    * are also validated when this group is active.
    */
-  interface OnCreate extends Default {}
+  interface OnCreate extends Default {
+  }
 
   /**
    * Validation group for updating existing entities.
    * Extends {@link Default} so that standard constraints
    * are also validated when this group is active.
    */
-  interface OnUpdate extends Default {}
+  interface OnUpdate extends Default {
+  }
 
 }

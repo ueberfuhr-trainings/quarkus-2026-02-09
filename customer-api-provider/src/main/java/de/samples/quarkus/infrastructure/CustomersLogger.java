@@ -1,5 +1,6 @@
-package de.samples.quarkus;
+package de.samples.quarkus.infrastructure;
 
+import de.samples.quarkus.domain.CustomersService;
 import io.quarkus.arc.log.LoggerName;
 import io.quarkus.arc.properties.IfBuildProperty;
 import io.quarkus.runtime.Startup;
