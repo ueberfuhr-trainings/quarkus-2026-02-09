@@ -3,6 +3,7 @@ package de.samples.quarkus;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.groups.ConvertGroup;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
@@ -28,7 +29,20 @@ public class CustomersService {
   }
 
   @Transactional
-  public void createCustomer(@Valid Customer customer) {
+  public void createCustomer(
+    @Valid
+    @ConvertGroup(to = ValidationGroups.OnCreate.class)
+    Customer customer
+  ) {
+    dao.save(customer);
+  }
+
+  @Transactional
+  public void updateCustomer(
+    @Valid
+    @ConvertGroup(to = ValidationGroups.OnUpdate.class)
+    Customer customer
+  ) {
     dao.save(customer);
   }
 

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -57,6 +58,22 @@ public class CustomersResource {
       .created(location)
       .entity(customer)
       .build();
+  }
+
+  @PATCH
+  @Path("/{uuid}")
+  @Consumes("application/merge-patch+json")
+  public void patchCustomer(
+    @PathParam("uuid")
+    UUID uuid,
+    @Valid
+    CustomerPatch patch
+  ) {
+    final var customer = customersService
+      .getCustomerById(uuid)
+      .orElseThrow(NotFoundException::new);
+    customer.setState(patch.getState());
+    customersService.updateCustomer(customer);
   }
 
   @GET
