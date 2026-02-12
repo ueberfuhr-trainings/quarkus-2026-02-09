@@ -2,55 +2,25 @@ package de.samples.quarkus.boundary;
 
 import de.samples.quarkus.domain.Customer;
 import de.samples.quarkus.domain.CustomerState;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.BadRequestException;
+import de.samples.quarkus.shared.config.MapStructConfig;
+import org.mapstruct.Mapper;
+import org.mapstruct.ValueMapping;
 
-@ApplicationScoped
-public class CustomerDtoMapper {
+@Mapper(config = MapStructConfig.class)
+public interface CustomerDtoMapper {
 
-  public CustomerDto map(Customer source) {
-    if (null == source) {
-      return null;
-    }
-    return new CustomerDto()
-      .setUuid(source.getUuid())
-      .setName(source.getName())
-      .setBirthdate(source.getBirthdate())
-      .setState(mapState(source.getState()));
-  }
+  CustomerDto map(Customer source);
 
-  public CustomerState mapState(String state) {
-    if (null == state) {
-      return null;
-    }
-    return switch (state) {
-      case "active" -> CustomerState.ACTIVE;
-      case "locked" -> CustomerState.LOCKED;
-      case "disabled" -> CustomerState.DISABLED;
-      default -> throw new BadRequestException();
-    };
-  }
+  Customer map(CustomerDto source);
 
-  public Customer map(CustomerDto source) {
-    if (null == source) {
-      return null;
-    }
-    return new Customer()
-      .setUuid(source.getUuid())
-      .setName(source.getName())
-      .setBirthdate(source.getBirthdate())
-      .setState(mapState(source.getState()));
-  }
+  @ValueMapping(source = "active", target = "ACTIVE")
+  @ValueMapping(source = "locked", target = "LOCKED")
+  @ValueMapping(source = "disabled", target = "DISABLED")
+  CustomerState mapState(String state);
 
-  public String mapState(CustomerState state) {
-    if (null == state) {
-      return null;
-    }
-    return switch (state) {
-      case ACTIVE -> "active";
-      case LOCKED -> "locked";
-      case DISABLED -> "disabled";
-    };
-  }
+  @ValueMapping(source = "ACTIVE", target = "active")
+  @ValueMapping(source = "LOCKED", target = "locked")
+  @ValueMapping(source = "DISABLED", target = "disabled")
+  String mapState(CustomerState state);
 
 }
