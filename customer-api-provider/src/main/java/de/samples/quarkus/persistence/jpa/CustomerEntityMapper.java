@@ -29,10 +29,19 @@ public class CustomerEntityMapper {
   }
 
   public void copy(CustomerEntity source, CustomerEntity target) {
-    target.setUuid(source.getUuid());
-    target.setName(source.getName());
-    target.setBirthdate(source.getBirthdate());
-    target.setState(source.getState());
+    target
+      .setUuid(source.getUuid())
+      .setName(source.getName())
+      .setBirthdate(source.getBirthdate())
+      .setState(source.getState());
+  }
+
+  public void copy(CustomerEntity source, Customer target) {
+    target
+      .setUuid(source.getUuid())
+      .setName(source.getName())
+      .setBirthdate(source.getBirthdate())
+      .setState(source.getState());
   }
 
 }

@@ -1,6 +1,5 @@
 package de.samples.quarkus.boundary;
 
-import de.samples.quarkus.ValidState;
 import de.samples.quarkus.domain.ValidCustomerAge;
 import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.validation.constraints.NotNull;

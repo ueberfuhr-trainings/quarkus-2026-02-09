@@ -47,10 +47,14 @@ public class CustomersDaoJpaImpl implements CustomersDao {
     final var entity = mapper.map(customer);
     if (null == entity.getUuid()) {
       repo.persist(entity);
+      mapper.copy(entity, customer);
     } else {
       repo
         .findByIdOptional(entity.getUuid())
-        .ifPresent(existing -> mapper.copy(entity, existing));
+        .ifPresent(existing -> {
+          mapper.copy(entity, existing);
+          mapper.copy(entity, customer);
+        });
     }
   }
 

@@ -1,6 +1,5 @@
 package de.samples.quarkus.boundary;
 
-import de.samples.quarkus.ValidState;
 import de.samples.quarkus.domain.Customer;
 import de.samples.quarkus.domain.CustomersService;
 import jakarta.validation.Valid;
