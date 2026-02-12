@@ -32,7 +32,17 @@ public class CustomersDaoJpaImpl implements CustomersDao {
 
   @Override
   public void save(Customer customer) {
-    repo.persist(customer);
+    if (null == customer.getUuid()) {
+      repo.persist(customer);
+    } else {
+      repo
+        .findByIdOptional(customer.getUuid())
+        .ifPresent(entity -> {
+          entity.setState(customer.getState());
+          entity.setName(customer.getName());
+          entity.setBirthdate(customer.getBirthdate());
+        });
+    }
   }
 
   @Override

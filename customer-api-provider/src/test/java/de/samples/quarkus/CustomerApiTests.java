@@ -228,6 +228,101 @@ class CustomerApiTests {
       .statusCode(404);
   }
 
+  @Test
+  void whenPatchCustomerState_thenGetCustomer_returnsUpdatedState() {
+    // --- POST: Customer mit state "active" anlegen ---
+    final var uuid =
+      given()
+        .contentType(ContentType.JSON)
+        .accept(ContentType.JSON)
+        .body("""
+          {
+            "name": "Patch Test",
+            "birthdate": "2000-01-01",
+            "state": "active"
+          }
+          """)
+        .when()
+        .post("/customers")
+        .then()
+        .statusCode(201)
+        .extract()
+        .path("uuid");
+
+    // --- PATCH: State auf "locked" ändern ---
+    given()
+      .contentType("application/merge-patch+json")
+      .body("""
+        {
+          "state": "locked"
+        }
+        """)
+      .when()
+      .patch("/customers/{uuid}", uuid)
+      .then()
+      .statusCode(204);
+
+    // --- GET: Prüfen, dass der State "locked" ist ---
+    given()
+      .accept(ContentType.JSON)
+      .when()
+      .get("/customers/{uuid}", uuid)
+      .then()
+      .statusCode(200)
+      .body("state", is(equalTo("locked")));
+  }
+
+  @Tag("API-Validation")
+  @Test
+  void whenPatchCustomerWithInvalidState_thenReturn400() {
+    // --- POST: Customer anlegen ---
+    final var uuid =
+      given()
+        .contentType(ContentType.JSON)
+        .accept(ContentType.JSON)
+        .body("""
+          {
+            "name": "Patch Validation Test",
+            "birthdate": "2000-01-01",
+            "state": "active"
+          }
+          """)
+        .when()
+        .post("/customers")
+        .then()
+        .statusCode(201)
+        .extract()
+        .path("uuid");
+
+    // --- PATCH: Ungültigen State übergeben ---
+    given()
+      .contentType("application/merge-patch+json")
+      .body("""
+        {
+          "state": "gelbekatze"
+        }
+        """)
+      .when()
+      .patch("/customers/{uuid}", uuid)
+      .then()
+      .statusCode(400);
+  }
+
+  @Test
+  void whenPatchCustomerWithUnknownUuid_thenReturn404() {
+    given()
+      .contentType("application/merge-patch+json")
+      .body("""
+        {
+          "state": "locked"
+        }
+        """)
+      .when()
+      .patch("/customers/{uuid}", java.util.UUID.randomUUID().toString())
+      .then()
+      .statusCode(404);
+  }
+
   static Stream<Arguments> invalidCustomerBodies() {
     return Stream.of(
       // unknown / read-only properties

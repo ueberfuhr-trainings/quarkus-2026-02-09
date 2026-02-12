@@ -29,6 +29,17 @@ public class CustomersService {
 
   @Transactional
   public void createCustomer(@Valid Customer customer) {
+    if (customer.getUuid() != null) {
+      throw new IllegalArgumentException("UUID must not be set when creating a customer");
+    }
+    dao.save(customer);
+  }
+
+  @Transactional
+  public void updateCustomer(@Valid Customer customer) {
+    if (customer.getUuid() == null) {
+      throw new IllegalArgumentException("UUID must be set when updating a customer");
+    }
     dao.save(customer);
   }
 
