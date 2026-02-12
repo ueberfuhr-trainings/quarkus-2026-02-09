@@ -1,4 +1,4 @@
-package de.samples.quarkus;
+package de.samples.quarkus.domain;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -38,7 +38,7 @@ public interface CustomersDao {
    * @param state the state to filter by
    * @return a stream of matching customers
    */
-  default Stream<Customer> findByState(String state) {
+  default Stream<Customer> findByState(CustomerState state) {
     return findAll()
       .filter(c -> state.equals(c.getState()));
   }

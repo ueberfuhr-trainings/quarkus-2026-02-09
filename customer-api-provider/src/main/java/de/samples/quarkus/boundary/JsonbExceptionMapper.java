@@ -1,4 +1,4 @@
-package de.samples.quarkus;
+package de.samples.quarkus.boundary;
 
 import jakarta.json.bind.JsonbException;
 import jakarta.ws.rs.core.Response;

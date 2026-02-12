@@ -1,5 +1,8 @@
-package de.samples.quarkus;
+package de.samples.quarkus.boundary;
 
+import de.samples.quarkus.ValidState;
+import de.samples.quarkus.domain.Customer;
+import de.samples.quarkus.domain.CustomersService;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -25,20 +28,23 @@ import java.util.UUID;
 public class CustomersResource {
 
   private final CustomersService customersService;
+  private final CustomerDtoMapper mapper;
 
   @GET
-  public Collection<Customer> getAllCustomers(
+  public Collection<CustomerDto> getAllCustomers(
     @QueryParam("state")
     @ValidState
     String state
   ) {
     if (state != null) {
       return customersService
-        .getCustomersByState(state)
+        .getCustomersByState(mapper.mapState(state))
+        .map(mapper::map)
         .toList();
     }
     return customersService
       .getAllCustomers()
+      .map(mapper::map)
       .toList();
   }
 
@@ -46,17 +52,19 @@ public class CustomersResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createCustomer(
     @Valid
-    Customer customer,
+    CustomerDto customerDto,
     @Context UriInfo uriInfo
   ) {
+    var customer = mapper.map(customerDto);
     customersService.createCustomer(customer);
+    var responseCustomerDto = mapper.map(customer);
     final var location = uriInfo
       .getAbsolutePathBuilder()
       .path("{uuid}")
-      .build(customer.getUuid());
+      .build(responseCustomerDto.getUuid());
     return Response
       .created(location)
-      .entity(customer)
+      .entity(responseCustomerDto)
       .build();
   }
 
@@ -67,12 +75,13 @@ public class CustomersResource {
     @PathParam("uuid")
     UUID uuid,
     @Valid
-    CustomerPatch patch
+    CustomerPatchDto patch
   ) {
+    final var state = mapper.mapState(patch.getState());
     final var customer = customersService
       .getCustomerById(uuid)
       .orElseThrow(NotFoundException::new);
-    customer.setState(patch.getState());
+    customer.setState(state);
     customersService.updateCustomer(customer);
   }
 

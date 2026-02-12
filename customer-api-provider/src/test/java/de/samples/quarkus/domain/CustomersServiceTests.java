@@ -1,4 +1,4 @@
-package de.samples.quarkus;
+package de.samples.quarkus.domain;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;

@@ -1,7 +1,6 @@
-package de.samples.quarkus;
+package de.samples.quarkus.domain;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.groups.ConvertGroup;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +23,10 @@ public class CustomersService {
     return dao.findById(uuid);
   }
 
-  public Stream<Customer> getCustomersByState(String state) {
+  public Stream<Customer> getCustomersByState(CustomerState state) {
     return dao.findByState(state);
   }
 
-  @Transactional
   public void createCustomer(
     @Valid
     @ConvertGroup(to = ValidationGroups.OnCreate.class)
@@ -37,7 +35,6 @@ public class CustomersService {
     dao.save(customer);
   }
 
-  @Transactional
   public void updateCustomer(
     @Valid
     @ConvertGroup(to = ValidationGroups.OnUpdate.class)
