@@ -13,26 +13,26 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class CustomersService {
 
-  private final CustomersRepository repo;
+  private final CustomersDao dao;
 
   public Stream<Customer> getAllCustomers() {
-    return repo.streamAll();
+    return dao.findAll();
   }
 
   public Optional<Customer> getCustomerById(UUID uuid) {
-    return repo.findByIdOptional(uuid);
+    return dao.findById(uuid);
   }
 
   public Stream<Customer> getCustomersByState(String state) {
-    return repo.findByState(state);
+    return dao.findByState(state);
   }
 
   @Transactional
   public void createCustomer(@Valid Customer customer) {
-    repo.persist(customer);
+    dao.save(customer);
   }
 
   public long count() {
-    return repo.count();
+    return dao.count();
   }
 }
