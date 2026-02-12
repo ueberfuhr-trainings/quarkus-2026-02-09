@@ -64,8 +64,10 @@ public class CustomersResource {
   @Path("/{uuid}")
   @Consumes("application/merge-patch+json")
   public void patchCustomer(
-    @PathParam("uuid") UUID uuid,
-    @Valid CustomerPatch patch
+    @PathParam("uuid")
+    UUID uuid,
+    @Valid
+    CustomerPatch patch
   ) {
     final var customer = customersService
       .getCustomerById(uuid)
