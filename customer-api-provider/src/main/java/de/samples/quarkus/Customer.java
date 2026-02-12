@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +25,8 @@ public class Customer {
   @Setter(onMethod_ = @JsonbTransient)
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
+  @Null(groups = ValidationGroups.OnCreate.class)
+  @NotNull(groups = ValidationGroups.OnUpdate.class)
   private UUID uuid;
   @Size(min = 3, max = 100)
   @NotNull
