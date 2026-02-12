@@ -1,47 +1,19 @@
 package de.samples.quarkus.persistence.jpa;
 
 import de.samples.quarkus.domain.Customer;
-import jakarta.enterprise.context.ApplicationScoped;
+import de.samples.quarkus.shared.config.MapStructConfig;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 
-@ApplicationScoped
-public class CustomerEntityMapper {
+@Mapper(config = MapStructConfig.class)
+public interface CustomerEntityMapper {
 
-  public CustomerEntity map(Customer source) {
-    if (null == source) {
-      return null;
-    }
-    return new CustomerEntity()
-      .setUuid(source.getUuid())
-      .setName(source.getName())
-      .setBirthdate(source.getBirthdate())
-      .setState(source.getState());
-  }
+  CustomerEntity map(Customer source);
 
-  public Customer map(CustomerEntity source) {
-    if (null == source) {
-      return null;
-    }
-    return new Customer()
-      .setUuid(source.getUuid())
-      .setName(source.getName())
-      .setBirthdate(source.getBirthdate())
-      .setState(source.getState());
-  }
+  Customer map(CustomerEntity source);
 
-  public void copy(CustomerEntity source, CustomerEntity target) {
-    target
-      .setUuid(source.getUuid())
-      .setName(source.getName())
-      .setBirthdate(source.getBirthdate())
-      .setState(source.getState());
-  }
+  void copy(CustomerEntity source, @MappingTarget CustomerEntity target);
 
-  public void copy(CustomerEntity source, Customer target) {
-    target
-      .setUuid(source.getUuid())
-      .setName(source.getName())
-      .setBirthdate(source.getBirthdate())
-      .setState(source.getState());
-  }
+  void copy(CustomerEntity source, @MappingTarget Customer target);
 
 }
