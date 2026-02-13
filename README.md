@@ -4,3 +4,4 @@
 
 - [Skizzen](docs)
 - [Beispiel-Projekt](customer-api-provider)
+- [Quiz: Onion Architecture](https://ueberfuhr-trainings.github.io/quarkus-2026-02-09/quiz-architektur.html)

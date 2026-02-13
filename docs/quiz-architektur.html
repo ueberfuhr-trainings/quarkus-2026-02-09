@@ -267,156 +267,28 @@
             color: #e2e8f0;
         }
 
-        /* Layer diagram hint */
+        /* Layer diagram */
         .layer-hint {
             text-align: center;
             margin-bottom: 32px;
-            padding: 28px 20px;
+            padding: 24px 20px 20px;
             background: #1e293b;
             border: 1px solid #334155;
             border-radius: 16px;
         }
 
-        .layer-diagram {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 16px 0 12px;
-        }
-
-        .onion {
-            position: relative;
-            width: 280px;
-            height: 280px;
-        }
-
-        .onion-ring {
-            position: absolute;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Outermost ring: Boundary */
-        .ring-boundary {
-            width: 280px;
-            height: 280px;
-            top: 0;
-            left: 0;
-            background: radial-gradient(circle, transparent 82%, #38bdf818 83%);
-            border: 2.5px solid #38bdf850;
-            box-shadow: 0 0 20px #38bdf815, inset 0 0 20px #38bdf808;
-        }
-
-        /* Middle ring: Domain */
-        .ring-domain {
-            width: 170px;
-            height: 170px;
-            top: 55px;
-            left: 55px;
-            background: radial-gradient(circle, transparent 75%, #818cf820 76%);
-            border: 2.5px solid #818cf860;
-            box-shadow: 0 0 16px #818cf815, inset 0 0 16px #818cf808;
-        }
-
-        /* Inner core: Domain Models */
-        .ring-core {
-            width: 80px;
-            height: 80px;
-            top: 100px;
-            left: 100px;
-            background: radial-gradient(circle, #c084fc20 0%, #c084fc10 100%);
-            border: 2.5px solid #c084fc70;
-            box-shadow: 0 0 24px #c084fc20, inset 0 0 12px #c084fc10;
-        }
-
-        /* Labels */
-        .onion-label {
-            position: absolute;
-            font-weight: 600;
-            letter-spacing: 0.03em;
-            white-space: nowrap;
-        }
-
-        .label-boundary {
-            font-size: 0.72rem;
-            color: #38bdf8;
-            top: 18px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .label-persistence {
-            font-size: 0.72rem;
-            color: #38bdf8;
-            bottom: 18px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .label-domain {
-            font-size: 0.72rem;
-            color: #818cf8;
-            top: 68px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .label-core {
-            font-size: 0.65rem;
-            color: #c084fc;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            line-height: 1.3;
-        }
-
-        /* Mapper arrows */
-        .mapper-label {
-            position: absolute;
-            font-size: 0.58rem;
-            font-weight: 500;
-            color: #64748b;
-            letter-spacing: 0.02em;
-        }
-
-        .mapper-left {
-            left: -2px;
-            top: 50%;
-            transform: translateY(-50%) rotate(-90deg);
-        }
-
-        .mapper-right {
-            right: -2px;
-            top: 50%;
-            transform: translateY(-50%) rotate(90deg);
-        }
-
-        /* Arrow indicators on rings */
-        .arrow-in {
-            position: absolute;
-            color: #475569;
-            font-size: 0.7rem;
-        }
-
-        .arrow-left {
-            left: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .arrow-right {
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
+        .onion-svg {
+            width: 100%;
+            max-width: 380px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
         }
 
         .layer-hint-text {
             color: #64748b;
             font-size: 0.8rem;
-            margin: 0;
+            margin: 10px 0 0;
         }
 
         .layer-hint-sub {
@@ -435,30 +307,91 @@
     </header>
 
     <div class="layer-hint">
-        <div class="layer-diagram">
-            <div class="onion">
-                <!-- Outer ring: Boundary & Persistence -->
-                <div class="onion-ring ring-boundary"></div>
-                <span class="onion-label label-boundary">Boundary</span>
-                <span class="onion-label label-persistence">Persistence</span>
+        <svg class="onion-svg" viewBox="0 0 460 430" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <clipPath id="topHalf">
+                    <rect x="0" y="0" width="460" height="217" />
+                </clipPath>
+                <clipPath id="bottomHalf">
+                    <rect x="0" y="223" width="460" height="207" />
+                </clipPath>
+                <mask id="ringMask">
+                    <rect width="460" height="430" fill="white" />
+                    <circle cx="230" cy="220" r="88" fill="black" />
+                </mask>
+            </defs>
 
-                <!-- Arrows indicating dependency direction -->
-                <span class="arrow-in arrow-left">&rsaquo;</span>
-                <span class="arrow-in arrow-right">&lsaquo;</span>
+            <!-- Boundary ring (top half) -->
+            <g clip-path="url(#topHalf)" mask="url(#ringMask)">
+                <circle cx="230" cy="220" r="175" fill="#38bdf8" fill-opacity="0.06"
+                        stroke="#38bdf8" stroke-opacity="0.25" stroke-width="1.5" />
+            </g>
 
-                <!-- Mapper labels -->
-                <span class="mapper-label mapper-left">Mapper</span>
-                <span class="mapper-label mapper-right">Mapper</span>
+            <!-- Persistence ring (bottom half) -->
+            <g clip-path="url(#bottomHalf)" mask="url(#ringMask)">
+                <circle cx="230" cy="220" r="175" fill="#2dd4bf" fill-opacity="0.06"
+                        stroke="#2dd4bf" stroke-opacity="0.25" stroke-width="1.5" />
+            </g>
 
-                <!-- Middle ring: Domain (Services) -->
-                <div class="onion-ring ring-domain"></div>
-                <span class="onion-label label-domain">Domain</span>
+            <!-- Domain circle -->
+            <circle cx="230" cy="220" r="85" fill="#818cf8" fill-opacity="0.08"
+                    stroke="#818cf8" stroke-opacity="0.35" stroke-width="1.5" />
 
-                <!-- Inner core: Domain Models -->
-                <div class="onion-ring ring-core"></div>
-                <span class="onion-label label-core">Domain<br>Models</span>
-            </div>
-        </div>
+            <!-- Connection lines -->
+            <!-- Boundary: Models - Mappers -->
+            <line x1="180" y1="89" x2="280" y2="89"
+                  stroke="#475569" stroke-width="1" stroke-dasharray="4,3" />
+            <!-- Boundary Mappers - Domain Models -->
+            <line x1="294" y1="111" x2="241" y2="216"
+                  stroke="#475569" stroke-width="1" stroke-dasharray="4,3" />
+            <!-- Persistence: Mappers - Models -->
+            <line x1="180" y1="352" x2="280" y2="352"
+                  stroke="#475569" stroke-width="1" stroke-dasharray="4,3" />
+            <!-- Persistence Mappers - Domain Models -->
+            <line x1="169" y1="331" x2="216" y2="259"
+                  stroke="#475569" stroke-width="1" stroke-dasharray="4,3" />
+
+            <!-- Boundary: Models -->
+            <circle cx="155" cy="89" r="25" fill="#38bdf8" fill-opacity="0.12"
+                    stroke="#38bdf8" stroke-opacity="0.5" stroke-width="1" />
+            <text x="155" y="93" text-anchor="middle"
+                  fill="#38bdf8" font-family="system-ui, sans-serif" font-size="11" font-weight="600">Models</text>
+
+            <!-- Boundary: Mappers -->
+            <circle cx="305" cy="89" r="25" fill="#38bdf8" fill-opacity="0.12"
+                    stroke="#38bdf8" stroke-opacity="0.5" stroke-width="1" />
+            <text x="305" y="93" text-anchor="middle"
+                  fill="#38bdf8" font-family="system-ui, sans-serif" font-size="11" font-weight="600">Mappers</text>
+
+            <!-- Domain: Models -->
+            <circle cx="230" cy="238" r="25" fill="#818cf8" fill-opacity="0.15"
+                    stroke="#818cf8" stroke-opacity="0.5" stroke-width="1" />
+            <text x="230" y="242" text-anchor="middle"
+                  fill="#c4b5fd" font-family="system-ui, sans-serif" font-size="11" font-weight="600">Models</text>
+
+            <!-- Persistence: Mappers -->
+            <circle cx="155" cy="352" r="25" fill="#2dd4bf" fill-opacity="0.12"
+                    stroke="#2dd4bf" stroke-opacity="0.5" stroke-width="1" />
+            <text x="155" y="356" text-anchor="middle"
+                  fill="#2dd4bf" font-family="system-ui, sans-serif" font-size="11" font-weight="600">Mappers</text>
+
+            <!-- Persistence: Models -->
+            <circle cx="305" cy="352" r="25" fill="#2dd4bf" fill-opacity="0.12"
+                    stroke="#2dd4bf" stroke-opacity="0.5" stroke-width="1" />
+            <text x="305" y="356" text-anchor="middle"
+                  fill="#2dd4bf" font-family="system-ui, sans-serif" font-size="11" font-weight="600">Models</text>
+
+            <!-- Layer labels -->
+            <text x="230" y="34" text-anchor="middle"
+                  fill="#38bdf8" font-family="system-ui, sans-serif" font-size="12" font-weight="700"
+                  letter-spacing="0.08em">BOUNDARY</text>
+            <text x="230" y="418" text-anchor="middle"
+                  fill="#2dd4bf" font-family="system-ui, sans-serif" font-size="12" font-weight="700"
+                  letter-spacing="0.08em">PERSISTENCE</text>
+            <text x="230" y="205" text-anchor="middle"
+                  fill="#a78bfa" font-family="system-ui, sans-serif" font-size="11" font-weight="700"
+                  letter-spacing="0.05em">DOMAIN</text>
+        </svg>
         <p class="layer-hint-text">Abhängigkeiten zeigen von außen nach innen</p>
         <p class="layer-hint-sub">Jede Schicht besitzt eigene Models und Mapper zur Nachbarschicht</p>
     </div>
