@@ -1,6 +1,10 @@
 package de.samples.quarkus.domain;
 
+import de.samples.quarkus.domain.events.CustomerCreatedEvent;
+import de.samples.quarkus.domain.events.CustomerEvent;
+import de.samples.quarkus.domain.events.CustomerUpdatedEvent;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
 import jakarta.validation.Valid;
 import jakarta.validation.groups.ConvertGroup;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +18,7 @@ import java.util.stream.Stream;
 public class CustomersService {
 
   private final CustomersDao dao;
+  private final Event<CustomerEvent> event;
 
   public Stream<Customer> getAllCustomers() {
     return dao.findAll();
@@ -33,6 +38,7 @@ public class CustomersService {
     Customer customer
   ) {
     dao.save(customer);
+    event.fire(new CustomerCreatedEvent(customer));
   }
 
   public void updateCustomer(
@@ -41,6 +47,7 @@ public class CustomersService {
     Customer customer
   ) {
     dao.save(customer);
+    event.fire(new CustomerUpdatedEvent(customer));
   }
 
   public long count() {
