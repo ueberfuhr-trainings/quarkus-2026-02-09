@@ -20,7 +20,8 @@ public class LogPerformanceInterceptor {
       return ctx.proceed();
     } finally {
       long end = System.currentTimeMillis();
-      logger.infov(
+      logger.logf(
+        Logger.Level.INFO,
         "Method {0} took {1}ms",
         ctx.getMethod().getName(),
         end - start
