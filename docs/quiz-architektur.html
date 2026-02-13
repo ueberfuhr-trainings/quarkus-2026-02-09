@@ -511,26 +511,26 @@ const questions = [
         explanation: "Die Domain-Schicht enthält Validierungen, Geschäftsregeln und fachliche Logik. Wenn die Boundary-Schicht direkt mit der Persistence-Schicht kommuniziert, wird die Geschäftslogik umgangen. Zudem sind Boundary und Persistence beide äußere Schichten, die einander nicht kennen sollten."
     },
     {
-        text: "Welchen konkreten Vorteil bieten getrennte Modelle in jeder Schicht beim automatisierten Testen der Anwendung?",
+        text: "Jede Schicht besitzt eigene Modell-Klassen. Welchen konkreten Vorteil bieten diese getrennten Modelle gegenüber einem einzigen, schichtübergreifend verwendeten Modell?",
         options: [
-            "Die Tests laufen schneller, weil weniger Daten geladen werden müssen",
+            "Die Anwendung wird schneller, weil weniger Daten zwischen den Schichten übertragen werden",
+            "Jede Schicht kann ihre Modelle mit schichtenspezifischen Details versehen, z.\u00A0B. JPA-Annotationen in der Persistence-Schicht oder JSON-Annotationen in der Boundary-Schicht, ohne die anderen Schichten zu beeinflussen",
             "Getrennte Modelle erzwingen mehr Testklassen, was die Testabdeckung automatisch erhöht",
-            "Die Domain-Schicht kann mit eigenen Models isoliert getestet werden, ohne eine Datenbank oder einen HTTP-Server starten zu müssen",
-            "Es gibt keinen Testvorteil, getrennte Modelle erzeugen nur zusätzlichen Aufwand"
+            "Es gibt keinen echten Vorteil, getrennte Modelle erzeugen nur zusätzlichen Aufwand"
         ],
-        correct: 2,
-        explanation: "Da die Domain-Schicht eigene Modelle verwendet und keine Abhängigkeiten zu Boundary oder Persistence hat, kann sie in Unit-Tests vollständig isoliert getestet werden, ohne externe Infrastruktur (Datenbank, HTTP-Server) hochfahren zu müssen."
+        correct: 1,
+        explanation: "Getrennte Modelle erlauben es jeder Schicht, ihre eigenen technischen Details (Annotationen, Datentypen, Feldnamen) frei zu gestalten. So kann die Persistence-Schicht z.\u00A0B. JPA-Annotationen verwenden und die Boundary-Schicht JSON-spezifische Annotationen, ohne dass diese Details in andere Schichten durchsickern."
     },
     {
-        text: "Ein neuer Kollege fragt, warum ein Datenbank-Entity-Feld (z.\u00A0B. ein technischer Primärschlüssel oder ein Audit-Timestamp) nicht im REST-DTO auftauchen sollte. Welche Begründung ist im Sinne der Onion Architecture korrekt?",
+        text: "Ein neuer Kollege fragt, warum bestimmte Datenbank-Entity-Felder (z.\u00A0B. ein lastModified-Timestamp oder ein Fremdschlüssel auf eine andere Tabelle) nicht im REST-DTO auftauchen sollten. Welche Begründung ist im Sinne der Onion Architecture korrekt?",
         options: [
             "Technische Datenbankdetails gehören zur Persistence-Schicht und haben in der Boundary-Schicht nichts zu suchen, da jede Schicht nur die für sie relevanten Informationen modelliert",
-            "REST-DTOs dürfen aus Sicherheitsgründen generell keine IDs enthalten",
+            "REST-DTOs dürfen aus Sicherheitsgründen generell keine Datenbankfelder enthalten",
             "Entity-Felder sind in DTOs nicht serialisierbar und würden zu Laufzeitfehlern führen",
             "Es gibt keinen Grund dagegen, alle Felder sollten in allen Modellen gleich sein"
         ],
         correct: 0,
-        explanation: "Jede Schicht modelliert nur das, was sie benötigt. Technische Datenbankfelder wie Auto-Increment-IDs oder Audit-Timestamps sind Implementierungsdetails der Persistence-Schicht und sollten nicht in die Boundary-Schicht durchsickern."
+        explanation: "Jede Schicht modelliert nur das, was sie benötigt. Technische Datenbankfelder wie lastModified-Timestamps oder Fremdschlüssel sind Implementierungsdetails der Persistence-Schicht und sollten nicht in die Boundary-Schicht durchsickern."
     },
     {
         text: "In unserer Architektur definiert die Domain-Schicht ein DAO-Interface (z.\u00A0B. CustomersDao), das die Persistence-Schicht dann implementiert. Welches Entwurfsprinzip wird hier angewandt und warum ist es notwendig?",
