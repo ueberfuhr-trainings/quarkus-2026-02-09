@@ -3,6 +3,7 @@ package de.samples.quarkus.domain;
 import de.samples.quarkus.domain.events.CustomerCreatedEvent;
 import de.samples.quarkus.domain.events.CustomerEvent;
 import de.samples.quarkus.domain.events.CustomerUpdatedEvent;
+import de.samples.quarkus.shared.interceptors.LogPerformance;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.validation.Valid;
@@ -32,6 +33,7 @@ public class CustomersService {
     return dao.findByState(state);
   }
 
+  @LogPerformance
   public void createCustomer(
     @Valid
     @ConvertGroup(to = ValidationGroups.OnCreate.class)
