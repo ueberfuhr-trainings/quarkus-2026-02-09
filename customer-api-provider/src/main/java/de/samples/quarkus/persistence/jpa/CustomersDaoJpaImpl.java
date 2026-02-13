@@ -3,6 +3,7 @@ package de.samples.quarkus.persistence.jpa;
 import de.samples.quarkus.domain.Customer;
 import de.samples.quarkus.domain.CustomerState;
 import de.samples.quarkus.domain.CustomersDao;
+import io.quarkus.arc.properties.IfBuildProperty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Typed;
 import jakarta.transaction.Transactional;
@@ -12,6 +13,11 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+@IfBuildProperty(
+  name = "quarkus.hibernate-orm.active",
+  stringValue = "true",
+  enableIfMissing = true
+)
 @ApplicationScoped
 @Typed(CustomersDao.class)
 @RequiredArgsConstructor
