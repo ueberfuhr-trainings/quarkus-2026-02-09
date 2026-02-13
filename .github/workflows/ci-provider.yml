@@ -1,4 +1,4 @@
-name: CI-Build
+name: CI-Build (API Provider)
 
 on:
   push:
@@ -6,13 +6,13 @@ on:
       - "main"
     paths:
       - "customer-api-provider/**"
-      - ".github/workflows/ci.yml"
+      - ".github/workflows/ci-provider.yml"
   pull_request:
     branches:
       - "main"
     paths:
       - "customer-api-provider/**"
-      - ".github/workflows/ci.yml"
+      - ".github/workflows/ci-provider.yml"
 
 jobs:
   build:
