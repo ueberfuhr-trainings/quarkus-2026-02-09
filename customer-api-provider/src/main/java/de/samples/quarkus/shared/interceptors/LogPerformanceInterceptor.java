@@ -15,13 +15,17 @@ public class LogPerformanceInterceptor {
 
   @AroundInvoke
   public Object intercept(InvocationContext ctx) throws Exception {
+    final var logLevel = AnnotationUtils
+      .findAnnotation(ctx.getMethod(), LogPerformance.class)
+      .map(LogPerformance::value)
+      .orElse(Logger.Level.INFO);
     long start = System.currentTimeMillis();
     try {
       return ctx.proceed();
     } finally {
       long end = System.currentTimeMillis();
       logger.logf(
-        Logger.Level.INFO,
+        logLevel,
         "Method {0} took {1}ms",
         ctx.getMethod().getName(),
         end - start

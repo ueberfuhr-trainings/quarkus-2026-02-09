@@ -1,14 +1,14 @@
 package de.samples.quarkus.domain;
 
 import de.samples.quarkus.domain.events.CustomerCreatedEvent;
-import de.samples.quarkus.domain.events.CustomerEvent;
 import de.samples.quarkus.domain.events.CustomerUpdatedEvent;
+import de.samples.quarkus.shared.interceptors.FireEvent;
 import de.samples.quarkus.shared.interceptors.LogPerformance;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Event;
 import jakarta.validation.Valid;
 import jakarta.validation.groups.ConvertGroup;
 import lombok.RequiredArgsConstructor;
+import org.jboss.logging.Logger;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -19,7 +19,6 @@ import java.util.stream.Stream;
 public class CustomersService {
 
   private final CustomersDao dao;
-  private final Event<CustomerEvent> event;
 
   public Stream<Customer> getAllCustomers() {
     return dao.findAll();
@@ -33,23 +32,23 @@ public class CustomersService {
     return dao.findByState(state);
   }
 
-  @LogPerformance
+  @LogPerformance(Logger.Level.DEBUG)
+  @FireEvent(CustomerCreatedEvent.class)
   public void createCustomer(
     @Valid
     @ConvertGroup(to = ValidationGroups.OnCreate.class)
     Customer customer
   ) {
     dao.save(customer);
-    event.fire(new CustomerCreatedEvent(customer));
   }
 
+  @FireEvent(CustomerUpdatedEvent.class)
   public void updateCustomer(
     @Valid
     @ConvertGroup(to = ValidationGroups.OnUpdate.class)
     Customer customer
   ) {
     dao.save(customer);
-    event.fire(new CustomerUpdatedEvent(customer));
   }
 
   public long count() {

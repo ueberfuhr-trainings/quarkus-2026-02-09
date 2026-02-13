@@ -1,6 +1,7 @@
 package de.samples.quarkus.shared.interceptors;
 
 import jakarta.interceptor.InterceptorBinding;
+import org.jboss.logging.Logger;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -16,4 +17,7 @@ import java.lang.annotation.Target;
 @Documented
 @InterceptorBinding
 public @interface LogPerformance {
+  
+  Logger.Level value() default Logger.Level.INFO;
+
 }
